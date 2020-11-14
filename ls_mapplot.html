@@ -1,0 +1,82 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Strategy Map Maker - Last Shelter: Survival</title>
+    <link type="text/css" rel="stylesheet" href="Lib/base.css" />
+    <link type="text/css" rel="stylesheet" href="Lib/spectrum-1.8.1/spectrum.css" />
+    <script type="text/javascript" src="Lib/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="Lib/spectrum-1.8.1/spectrum.js"></script>
+    <script type="text/javascript" src="Draw/BaseDraw.js"></script>
+    <script type="text/javascript" src="Draw/ButtonEvents.js"></script>
+    <script type="text/javascript">
+        jQuery(function($){ 
+            $(".ColorPick").spectrum({
+                color: "#ff0000" // 初期値
+            });
+        }); 
+    </script>
+
+</head>
+
+<body onload="BaseMapDraw()">
+
+    <h1 id="PageTitle">Strategy Map Maker for Last Shelter: Survival</h1>
+    <img src="Img/Icon_Setting.png" id="BtnSetting" onClick="switchSettingForm()" />
+
+    <!-- Draw Area Begin -->
+    <div id="DrawArea">
+        <canvas id="LSMap"></canvas>
+    </div>
+    <!-- Draw Area End -->
+
+    <!-- Input Area Begin -->
+    <div id="InputArea">
+        <h2>Point</h2>
+        <input type="button" class="SelectButton" value="Title:タイトル" />
+        <input type="button" class="SelectButton" value="Dot:点" />
+        <input type="button" class="SelectButton" value="Line:線" />
+        <input type="button" class="SelectButton" value="Rect:面" />
+        <input type="button" class="SelectButton" value="Text:テキスト" />
+        
+        
+        <!-- CSV Format -->
+        <textarea id="Points" style="width: 100%; height: 300px;"></textarea><br />
+
+        <table>
+            <tr>
+                <td><input type="text" class="ColorPick" id="Dota" /></td>
+                <td>X: <input type="text" size="4" maxlength="4" class="Cord" id="IpX[0]" /></td>
+                <td>Y: <input type="text" size="4" maxlength="4" class="Cord" id="IpY[0]" /></td>
+                <td>Label: <input type="text" size="40" id="IpLabel[0]" /></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><input type="text" class="ColorPick" id="Dota" /></td>
+                <td>X: <input type="text" size="4" maxlength="4" class="Cord" id="IpX[0]" /></td>
+                <td>Y: <input type="text" size="4" maxlength="4" class="Cord" id="IpY[0]" /></td>
+                <td>Label: <input type="text" size="40" id="IpLabel[0]" /></td>
+                <td><img src="Img/Icon_Remove.png" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" class="ColorPick" id="Dota" /></td>
+                <td>X: <input type="text" size="4" maxlength="4" class="Cord" id="IpX[0]" /></td>
+                <td>Y: <input type="text" size="4" maxlength="4" class="Cord" id="IpY[0]" /></td>
+                <td>Label: <input type="text" size="40" id="IpLabel[0]" /></td>
+                <td><img src="Img/Icon_Remove.png" /></td>
+            </tr>
+        </table>
+        
+        
+        
+        <div style="font-size: 10pt; line-height: 16px;"><img src="Img/Icon_Add.png" />Add new coordinates</div>
+
+        <input type="button" class="ClearButton" value="Clear All" />
+        <input type="button" class="RegistButton" value="Regist" onClick="PlotDots()" />
+
+    </div>
+
+    <!-- Input Area End -->
+
+    <div id="Others">Wallpaper: <a href="https://lostandtaken.com/" target="_blank">L+T</a></div>
+</body>
+</html>
