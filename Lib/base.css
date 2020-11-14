@@ -3,6 +3,10 @@ html, body{
     padding: 0;
 }
 
+html{
+    box-sizing: border-box;
+}
+
 body{
     overflow: hidden;
     background-image: url("../Img/background.jpg");
@@ -30,21 +34,22 @@ h1#PageTitle{
 
 }
 
-h2{
+h2#InputAreaTitle{
     margin: 0;
-    padding: 0;
+    padding: 5;
     font-size: 12pt;
+    text-align: center;
 
 }
 
 #InputArea{
     position: absolute;
     top: 60px;
-    left: 60px;
+    left: Calc( 5vw );
     z-index: 10;
 
-    width: 800px;
-    height: 60%;
+    width: 90vw;
+    height: 90vh;
     padding: 10px;
 
     border-radius: 10px;
@@ -92,12 +97,16 @@ h2{
 }
 
 .SelectButton{
-    width: 150px;
+    width: Calc( 100% / 7 );
     height: 30px;
+    margin: 0;
+    padding: 0;
     font-size: 10pt;
     color: #555;
     background-color: #DDD;
     border-width: 0;
+    border-radius: 5px;
+
 }
 
 .RegistButton{
@@ -107,6 +116,7 @@ h2{
     color: #FFF;
     background-color: rgb(255, 175, 175);
     border-width: 0;
+    border-radius: 5px;
 }
 
 .ClearButton{
@@ -116,6 +126,7 @@ h2{
     color: rgb(255, 255, 255);
     background-color: rgb(122, 153, 255);
     border-width: 0;
+    border-radius: 5px;
 }
 
 .Cord{
@@ -131,4 +142,23 @@ input[type="text"]{
     border: 0;
     height: 25px;
     font-size: 12pt;
+    border-radius: 3px;
 }
+
+textarea{
+    border: 0;
+    border-radius: 3px;
+}
+
+#Input_Title{
+    text-align: center;
+}
+
+/* 起動時の初期表示設定 */
+#Input_Dots, #Input_Lines, #Input_Area, #Input_Text, #Input_Csv{
+    display: none;
+}
+#ButtonSetTitle{
+    background-color: #FFA500;
+}
+

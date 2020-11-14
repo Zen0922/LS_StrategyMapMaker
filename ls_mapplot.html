@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Strategy Map Maker - Last Shelter: Survival</title>
@@ -9,7 +10,7 @@
     <script type="text/javascript" src="Draw/BaseDraw.js"></script>
     <script type="text/javascript" src="Draw/ButtonEvents.js"></script>
     <script type="text/javascript">
-        jQuery(function($){ 
+        jQuery(function ($) {
             $(".ColorPick").spectrum({
                 color: "#ff0000" // 初期値
             });
@@ -31,47 +32,113 @@
 
     <!-- Input Area Begin -->
     <div id="InputArea">
-        <h2>Point</h2>
-        <input type="button" class="SelectButton" value="Title:タイトル" />
-        <input type="button" class="SelectButton" value="Dot:点" />
-        <input type="button" class="SelectButton" value="Line:線" />
-        <input type="button" class="SelectButton" value="Rect:面" />
-        <input type="button" class="SelectButton" value="Text:テキスト" />
-        
-        
-        <!-- CSV Format -->
-        <textarea id="Points" style="width: 100%; height: 300px;"></textarea><br />
+        <h2 id="InputAreaTitle">Data Input Settings</h2>
+        <!-- Input type Select Begin -->
+        <div id="InputSelect" style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+            <button class="SelectButton" id="ButtonSetTitle" onclick="setTitleMode()">Title: タイトル</button>
+            <button class="SelectButton" id="ButtonSetDots" onclick="setDotsMode()">Dot:点</button>
+            <button class="SelectButton" id="ButtonSetLines" onclick="setLinesMode()">Line:線</button>
+            <button class="SelectButton" id="ButtonSetArea" onclick="setAreaMode()">Area:面</button>
+            <button class="SelectButton" id="ButtonSetText" onclick="setTextMode()">Text:テキスト</button>
+            <button class="SelectButton" id="ButtonSetCsv" onclick="setCsvMode()">CSV:CSV入力</button>
+        </div>
+        <!-- Input type Select End -->
 
-        <table>
-            <tr>
-                <td><input type="text" class="ColorPick" id="Dota" /></td>
-                <td>X: <input type="text" size="4" maxlength="4" class="Cord" id="IpX[0]" /></td>
-                <td>Y: <input type="text" size="4" maxlength="4" class="Cord" id="IpY[0]" /></td>
-                <td>Label: <input type="text" size="40" id="IpLabel[0]" /></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><input type="text" class="ColorPick" id="Dota" /></td>
-                <td>X: <input type="text" size="4" maxlength="4" class="Cord" id="IpX[0]" /></td>
-                <td>Y: <input type="text" size="4" maxlength="4" class="Cord" id="IpY[0]" /></td>
-                <td>Label: <input type="text" size="40" id="IpLabel[0]" /></td>
-                <td><img src="Img/Icon_Remove.png" /></td>
-            </tr>
-            <tr>
-                <td><input type="text" class="ColorPick" id="Dota" /></td>
-                <td>X: <input type="text" size="4" maxlength="4" class="Cord" id="IpX[0]" /></td>
-                <td>Y: <input type="text" size="4" maxlength="4" class="Cord" id="IpY[0]" /></td>
-                <td>Label: <input type="text" size="40" id="IpLabel[0]" /></td>
-                <td><img src="Img/Icon_Remove.png" /></td>
-            </tr>
-        </table>
-        
-        
-        
-        <div style="font-size: 10pt; line-height: 16px;"><img src="Img/Icon_Add.png" />Add new coordinates</div>
+        <!-- Title Input Begin  -->
+        <div id="Input_Title">
+            <input type="text" id="ImageTitle" style="width: 90%"
+                placeholder="Enter a title for this map. このマップのタイトルを入力しましょう。" />
+        </div>
+        <!-- Title Input End-->
 
-        <input type="button" class="ClearButton" value="Clear All" />
-        <input type="button" class="RegistButton" value="Regist" onClick="PlotDots()" />
+        <!-- CSV Format Input Begin -->
+        <div id="Input_Csv">
+            <textarea id="Points" style="width: 100%; height: 300px;"></textarea>
+        </div>
+        <!-- CSV Format Input End -->
+
+        <!-- Dot Input Begin -->
+        <div id="Input_Dots">
+            <table>
+                <tr>
+                    <td><input type="text" class="ColorPick" id="Dota" /></td>
+                    <td><input type="text" size="40" id="IpLabel[0]" placeholder="Label 名前" /></td>
+                    <td><input type="text" size="4" maxlength="4" class="Cord" id="IpX[0]" placeholder="X" />:</td>
+                    <td><input type="text" size="4" maxlength="4" class="Cord" id="IpY[0]" placeholder="Y" /></td>
+                    <td></td>
+                </tr>
+
+            </table>
+            <div style="font-size: 10pt; line-height: 16px;"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add new coordinates</div>
+        </div>
+        <!-- Dot Input End -->
+
+        <!-- Line Input Begin -->
+        <div id="Input_Lines">
+            <table>
+                <tr>
+                    <td><input type="text" class="ColorPick" id="InputLineColor" /></td>
+                    <td><input type="text" id="InputLineLabel" placeholder="Label 名前" /></td>
+                    <td>
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBeginX" placeholder="X1" />:
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBegenY"
+                            placeholder="Y1" />To
+                    </td>
+                    <td>
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndX" placeholder="X2" />:
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndY" placeholder="Y2" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <input type="checkbox" id="InputLineDisplayLabel" />Label ラベル&nbsp;&nbsp;
+                        <input type="checkbox" id="InputLineDisplayDistanceKm" />Distance(km) 距離(km)
+                        <input type="checkbox" id="InputLineDisplayDistanceTiles" />Distance(tiles) 距離(タイル数)
+                    </td>
+                </tr>
+            </table>
+            <div style="font-size: 10pt; line-height: 16px;"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add new coordinates</div>
+        </div>
+        <!-- Line Input End -->
+
+        <!-- Area Input Begin -->
+        <div id="Input_Area">
+            <table>
+                <tr>
+                    <td>
+                        <input type="text" class="ColorPick" id="InputLineColor" />
+                        <input type="text" id="InputLineLabel" placeholder="Label ラベル" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX1" placeholder="X" />:
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY1" placeholder="Y" />&nbsp;
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX2" placeholder="X" />:
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY2" placeholder="Y" />&nbsp;
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX3" placeholder="X" />:
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY3" placeholder="Y" />&nbsp;
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX4" placeholder="X" />:
+                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY4" placeholder="Y" />
+
+                    </td>
+                </tr>
+
+
+            </table>
+        </div>
+        <!-- Area Input End -->
+
+        <!-- Text Input Begin -->
+        <div id="Input_Text">
+            testinput
+        </div>
+        <!-- Text Input Begin -->
+
+        <div style="text-align: center; margin-top: 10px;">
+            <button class="ClearButton">Clear All</button>
+            <button class="RegistButton" onClick="InfoRegist()">Regist</button>
+        </div>
 
     </div>
 
@@ -79,4 +146,5 @@
 
     <div id="Others">Wallpaper: <a href="https://lostandtaken.com/" target="_blank">L+T</a></div>
 </body>
+
 </html>
