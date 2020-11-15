@@ -129,12 +129,15 @@ function setCsvMode() {
 function InfoRegist(){
     BaseMapDraw();
     var tmpTitle = $("#ImageTitle").val();
+    
     DrawTitle( tmpTitle );
-    DrawLine("#F00","test",0,0,1200,1200,1,1,1);
-    DrawLine("#F00","test",0,0,1200,0,1,1,1);
-    DrawLine("#F00","test",0,0,0,1200,1,1,1);
-    DrawLine("#F00","test",600,600,0,1200,1,1,1);
-    DrawLine("#F00","test",600,600,1200,0,1,1,1);
-    PlotDots();
+    console.log(DrawArea("rgba(255,0,0,0.5)","test",0,0,300,0,0,300,300,300,1));
+    //console.log(DrawArea("#F00","test",1200,1200,0,0,0,1200,1200,0,1));
+    //PlotDots();
     hideSettingForm();
 }
+
+
+///////////////////////
+// Load Csv And Draw //
+///////////////////////

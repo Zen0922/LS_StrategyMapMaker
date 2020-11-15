@@ -8,7 +8,7 @@ const COE_W = (C_MAX_WIDTH / 2) / 1200;
 const COE_H = C_MAX_HEIGHT / 1200;
 
 //////////////
-// BaseDraw //
+// Map Draw //
 //////////////
 function BaseMapDraw() {
     const LSMap = document.getElementById("LSMap");
@@ -171,40 +171,18 @@ function BaseMapDraw() {
 
 }
 
-// PlotDots
-// 入力フォーマット
-//  XXXX:YYYY,Label<Return>
-function PlotDots() {
-    var plotText = $("#Points").val();
-    // 改行コードを揃えて前後の余分な改行を除去
-    plotText = plotText.replace("\r\n", "\n");
-    plotText = plotText.replace("\r", "\n");
-    plotText = plotText.trim();
-    // 行ごとに分割して処理
-    var plotLines = plotText.split("\n");
-    plotLines.forEach(function (elem, index) {
-        // テキストを分解
-        tmpText = elem.split(",");
-        tmpLabel = tmpText[1];
-        tmpCord = tmpText[0].split(":");
-        tmpX = tmpCord[0];
-        tmpY = tmpCord[1];
-        var realCord = PlotDot(tmpX, tmpY);     // 点をプロット
-        // ラベルを表示
-        PlotText(tmpLabel, realCord[0] + 10, realCord[1]);
-    });
-
-}
+///////////////////////
+// Basic Draw Method //
+///////////////////////
 
 // 指定座標にテキストをプロットする
-function PlotText(argLabel, argX, argY) {
+//  Lable, CordX(Image), CordY(Image)
+function DrawText(argLabel, argX, argY) {
     if (argLabel == "") {
         return false;
     } else {
         const LSMap = document.getElementById("LSMap");
         const ctx = LSMap.getContext('2d');
-        ctx.width = C_MAX_WIDTH;
-        ctx.height = C_MAX_HEIGHT;
 
         ctx.font = "bold 12pt sans-serif";
         var textWidth = ctx.measureText(argLabel);
@@ -224,8 +202,9 @@ function PlotText(argLabel, argX, argY) {
 
 }
 
-// LastShelterの座標を画像の座標に変換して点（丸）をプロットする関数
-function PlotDot(argX, argY) {
+// 点をプロットする
+//  CordX(LS), CordY(LS)
+function DrawDot(argX, argY) {
     const LSMap = document.getElementById("LSMap");
     const ctx = LSMap.getContext('2d');
     ctx.width = C_MAX_WIDTH;
@@ -242,33 +221,6 @@ function PlotDot(argX, argY) {
     return Array(tmpx, tmpy);
 }
 
-// LastShelterの座標を画像の座標に変換する関数
-function EncodeLSToImage(ix, iy) {
-    var ox = 0;
-    var baseX = 0;
-    var oy = 0;
-    var baseY = 0;
-    var result = [];
-
-    // 傾きを計算する
-    COE_X = C_MAX_WIDTH / C_MAX_HEIGHT;
-    COE_Y = C_MAX_HEIGHT / C_MAX_WIDTH;
-
-    // X座標を求める
-    ox = ix * COE_W;    // 基準座標
-    baseX = C_MAX_WIDTH / 2 - iy * COE_W;
-    ox = ox + baseX;
-
-    // Y座標を求める
-    oy = -1 * COE_Y * ox + C_MAX_HEIGHT / 2;
-    baseY = C_MAX_HEIGHT * ix / 1200;
-    oy = oy + baseY;
-
-    result[0] = ox;
-    result[1] = oy;
-    return result;
-}
-
 // タイトルを画像に出力する関数
 function DrawTitle(argTitle) {
     const LSMap = document.getElementById("LSMap");
@@ -283,6 +235,10 @@ function DrawTitle(argTitle) {
 }
 
 // 線を描く関数
+//  argColor: HEX or rgb() or rgba()
+//  argLabel: Free Text
+//  argX(LS), argY(LS)
+// argDisplay, argDispKm, argDispTiles -> 1:true, 0:false
 function DrawLine(argColor, argLabel, argX1, argY1, argX2, argY2, argDispLabel, argDispKm, argDispTiles) {
     const LSMap = document.getElementById("LSMap");
     const ctx = LSMap.getContext('2d');
@@ -352,6 +308,100 @@ function DrawLine(argColor, argLabel, argX1, argY1, argX2, argY2, argDispLabel, 
     ctx.fillText(tmpText, tmpCenterX + 10, tmpCenterY - 10);
     ctx.closePath();
 }
+
+// 面を描く関数
+
+
+function DrawArea(argColor, argLabel, argX1, argY1, argX2, argY2, argX3, argY3, argX4, argY4, argDispLabel) {
+    const LSMap = document.getElementById("LSMap");
+    const ctx = LSMap.getContext('2d');
+    var tmpCord;
+    var tmpCords = [[0, 0], [0, 0], [0, 0], [0, 0]];
+    var escapeCord = [0, 0];
+    var minValue;
+    var tmpText;
+
+    // Cord(LS) -> Cord(Image)
+    tmpCord = EncodeLSToImage(argX1, argY1);
+    tmpCords[0][0] = tmpCord[0];
+    tmpCords[0][1] = tmpCord[1];
+    tmpCord = EncodeLSToImage(argX2, argY2);
+    tmpCords[1][0] = tmpCord[0];
+    tmpCords[1][1] = tmpCord[1];
+    tmpCord = EncodeLSToImage(argX3, argY3);
+    tmpCords[2][0] = tmpCord[0];
+    tmpCords[2][1] = tmpCord[1];
+    tmpCord = EncodeLSToImage(argX4, argY4);
+    tmpCords[3][0] = tmpCord[0];
+    tmpCords[3][1] = tmpCord[1];
+
+    // SortX asc
+    tmpCords.sort(function (a, b) { return (a[0] - b[0]); });
+    // SortY
+    // 1番目と2番目の座標でYが大きい方を2番目に、3番目と4番目の座標でYが大きいほうを3番目に
+    if (tmpCords[0][1] > tmpCords[1][1]) {
+        escapeCord = tmpCords[0];
+        tmpCords[0] = tmpCords[1];
+        tmpCords[1] = escapeCord;
+    }
+    if (tmpCords[2][1] < tmpCords[3][1]) {
+        escapeCord = tmpCords[3];
+        tmpCords[3] = tmpCords[2];
+        tmpCords[2] = escapeCord;
+    }
+    // Draw
+    ctx.beginPath();
+    ctx.moveTo(tmpCords[0][0], tmpCords[0][1]);
+    ctx.lineTo(tmpCords[1][0], tmpCords[1][1]);
+    ctx.lineTo(tmpCords[2][0], tmpCords[2][1]);
+    ctx.lineTo(tmpCords[3][0], tmpCords[3][1]);
+    ctx.lineTo(tmpCords[0][0], tmpCords[0][1]);
+    ctx.fillStyle = argColor;
+    ctx.closePath();
+    ctx.fill();
+
+
+
+    //*/*/*/*/*/*/*/*///
+    // Working Now!!! //
+    // ラベルをつける //
+
+}
+
+
+
+/////////////////////////
+// Internal processing //
+/////////////////////////
+
+// LastShelterの座標を画像の座標に変換する関数
+//  CordX(LS), CordY(LS) -> CordX(Image), CordY(Image)
+function EncodeLSToImage(ix, iy) {
+    var ox = 0;
+    var baseX = 0;
+    var oy = 0;
+    var baseY = 0;
+    var result = [];
+
+    // 傾きを計算する
+    COE_X = C_MAX_WIDTH / C_MAX_HEIGHT;
+    COE_Y = C_MAX_HEIGHT / C_MAX_WIDTH;
+
+    // X座標を求める
+    ox = ix * COE_W;    // 基準座標
+    baseX = C_MAX_WIDTH / 2 - iy * COE_W;
+    ox = ox + baseX;
+
+    // Y座標を求める
+    oy = -1 * COE_Y * ox + C_MAX_HEIGHT / 2;
+    baseY = C_MAX_HEIGHT * ix / 1200;
+    oy = oy + baseY;
+
+    result[0] = ox;
+    result[1] = oy;
+    return result;
+}
+
 
 // 2点間の距離を計算
 function CalcDistanceKm(argX1, argY1, argX2, argY2) {
@@ -470,4 +520,29 @@ function isLSCord(argCord) {
         return false;
     }
     return true;
+}
+
+// PlotDots
+// 入力フォーマット
+//  XXXX:YYYY,Label<Return>
+function PlotDots() {
+    var plotText = $("#Points").val();
+    // 改行コードを揃えて前後の余分な改行を除去
+    plotText = plotText.replace("\r\n", "\n");
+    plotText = plotText.replace("\r", "\n");
+    plotText = plotText.trim();
+    // 行ごとに分割して処理
+    var plotLines = plotText.split("\n");
+    plotLines.forEach(function (elem, index) {
+        // テキストを分解
+        tmpText = elem.split(",");
+        tmpLabel = tmpText[1];
+        tmpCord = tmpText[0].split(":");
+        tmpX = tmpCord[0];
+        tmpY = tmpCord[1];
+        var realCord = PlotDot(tmpX, tmpY);     // 点をプロット
+        // ラベルを表示
+        DrawText(tmpLabel, realCord[0] + 10, realCord[1]);
+    });
+
 }
