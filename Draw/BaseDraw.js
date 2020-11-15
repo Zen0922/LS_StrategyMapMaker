@@ -195,7 +195,7 @@ function DrawText(argLabel, argX, argY) {
         // テキストを描画
         ctx.beginPath();
         ctx.fillStyle = "rgb(255,255,255)";
-        ctx.fillText(tmpLabel, argX + 20, argY);
+        ctx.fillText(argLabel, argX + 20, argY);
         ctx.closePath();
         return true;
     }
@@ -204,7 +204,7 @@ function DrawText(argLabel, argX, argY) {
 
 // 点をプロットする
 //  CordX(LS), CordY(LS)
-function DrawDot(argX, argY) {
+function DrawDot(argColor, argLabel, argX, argY, argDispLabel) {
     const LSMap = document.getElementById("LSMap");
     const ctx = LSMap.getContext('2d');
     ctx.width = C_MAX_WIDTH;
@@ -214,11 +214,14 @@ function DrawDot(argX, argY) {
     var tmpx = tmpCord[0];
     var tmpy = tmpCord[1];
     ctx.beginPath();
-    ctx.arc(tmpx, tmpy, 5, 0 * Math.PI / 180, 360 * Math.PI / 180, false);
+    ctx.arc(tmpx, tmpy, 2, 0 * Math.PI / 180, 360 * Math.PI / 180, false);
     ctx.closePath();
-    ctx.fillStyle = "rgb(255,0,0)";
+    ctx.fillStyle = argColor;
     ctx.fill();
-    return Array(tmpx, tmpy);
+
+    if (argDispLabel === 1) {
+        DrawText(argLabel, tmpx, tmpy);
+    }
 }
 
 // タイトルを画像に出力する関数
@@ -310,15 +313,12 @@ function DrawLine(argColor, argLabel, argX1, argY1, argX2, argY2, argDispLabel, 
 }
 
 // 面を描く関数
-
-
 function DrawArea(argColor, argLabel, argX1, argY1, argX2, argY2, argX3, argY3, argX4, argY4, argDispLabel) {
     const LSMap = document.getElementById("LSMap");
     const ctx = LSMap.getContext('2d');
     var tmpCord;
     var tmpCords = [[0, 0], [0, 0], [0, 0], [0, 0]];
     var escapeCord = [0, 0];
-    var minValue;
     var tmpText;
 
     // Cord(LS) -> Cord(Image)
@@ -360,12 +360,27 @@ function DrawArea(argColor, argLabel, argX1, argY1, argX2, argY2, argX3, argY3, 
     ctx.closePath();
     ctx.fill();
 
+    // 描画基準座標決定
+    if (argDispLabel === 1) {
+        var tmpCenterX = tmpCords[0][0] - (tmpCords[0][0] - tmpCords[3][0]) / 2 + 20;
+        var tmpCenterY = tmpCords[0][1] - (tmpCords[0][1] - tmpCords[3][1]) / 2 - 10;
 
+        // 描画処理
+        ctx.font = "9pt sans-serif";
+        var textWidth = ctx.measureText(argLabel);
+        // テキスト用の枠を描画
+        ctx.beginPath();
+        ctx.rect(tmpCenterX, tmpCenterY, textWidth.width + 20, -30);
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fill();
+        ctx.closePath();
+        // テキストを描画
+        ctx.beginPath();
+        ctx.fillStyle = "rgb(255,255,255)";
+        ctx.fillText(argLabel, tmpCenterX + 10, tmpCenterY - 10);
+        ctx.closePath();
 
-    //*/*/*/*/*/*/*/*///
-    // Working Now!!! //
-    // ラベルをつける //
-
+    }
 }
 
 
@@ -420,90 +435,7 @@ function CalcDistanceTiles(argX1, argY1, argX2, argY2) {
     }
 }
 
-// CSV形式で記録する
-function EncodeCsvData(argType, argLabel, argColor, argCord1, argCord2, argCord3, argCord4) {
-    var resultCsv = "";
 
-    // タイプ処理
-    if (!(argType === "Dot" || argType === "Line" || argType === "Area" || argType === "Text" || argType === "Title")) {
-        return "";
-    }
-    resultCsv = argType + ",";
-
-    // ラベル処理
-    argLabel = argLabel.replace("\r\n", "");
-    argLabel = argLabel.replace("\r", "");
-    argLabel = argLabel.replace("\n", "");
-    argLabel = argLabel.replace("<", "&lt;");
-    argLabel = argLabel.replace(">", "&gt;");
-    resultCsv = resultCsv + argLabel + ",";
-
-    // カラー処理
-    argColor = argColor.replace("\r\n", "");
-    argColor = argColor.replace("\r", "");
-    argColor = argColor.replace("\n", "");
-    argColor = argColor.replace("<", "");
-    argColor = argColor.replace(">", "");
-    if (argType === "Title") {
-        argColor = "";
-    }
-    resultCsv = resultCsv + argColor + ",";
-
-    // 座標処理
-    if (!isLSCord(argCord1)) {
-        argCord1 = "";
-    }
-    if (!isLSCord(argCord2)) {
-        argCord2 = "";
-    }
-    if (!isLSCord(argCord3)) {
-        argCord3 = "";
-    }
-    if (!isLSCord(argCord4)) {
-        argCord4 = "";
-    }
-
-    // 入力タイプ別に不要な座標を削除する処理
-    if (argType === "Dot" || argType === "Text") {
-        argCord2 = "";
-        argCord3 = "";
-        argCord4 = "";
-    } else if (argType === "Line") {
-        argCord3 = "";
-        argCord4 = "";
-    } else if (argType === "Title") {
-        argCord1 = "";
-        argCord2 = "";
-        argCord3 = "";
-        argCord4 = "";
-    }
-    // 座標の組み合わせチェック（必要な座標が存在するか）
-    if (argCord1 === "" && (argType === "Dot" || argType === "Text")) {
-        return "";
-    } else if ((argCord1 === "" || argCord2 === "") && argType === "Line") {
-        return "";
-    } else if ((argCord1 === "" || argCord2 === "" || argCord3 === "" || argCord4 === "") && argType === "Area") {
-        return "";
-    }
-    resultCsv = resultCsv + argCord1 + "," + argCord2 + "," + argCord3 + "," + argCord4 + "\n";
-
-    return resultCsv;
-}
-
-console.log(DecodeCsvData("Area,Test,#F00,1200:1200,1200:1200,1200:1200,1200:1200"))
-
-// CSVデータを配列で返却
-function DecodeCsvData(argString) {
-    var resVal = argString.split(",");
-    if (resVal.length !== 7) {
-        return false;
-    }
-    if (EncodeCsvData(resVal[0], resVal[1], resVal[2], resVal[3], resVal[4], resVal[5], resVal[6]) === "") {
-        return false;
-    }
-    return resVal;
-
-}
 
 // LastShelterの座標かどうかを判別する
 function isLSCord(argCord) {
@@ -522,11 +454,13 @@ function isLSCord(argCord) {
     return true;
 }
 
+// 以下ボツ処理
+
 // PlotDots
 // 入力フォーマット
 //  XXXX:YYYY,Label<Return>
 function PlotDots() {
-    var plotText = $("#Points").val();
+    var plotText = $("#InputFormCsv").val();
     // 改行コードを揃えて前後の余分な改行を除去
     plotText = plotText.replace("\r\n", "\n");
     plotText = plotText.replace("\r", "\n");
