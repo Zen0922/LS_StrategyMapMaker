@@ -167,7 +167,7 @@ function LoadCsv() {
             CsvLine[7] = Number(CsvLine[7]);
             CsvLine[8] = Number(CsvLine[8]);
             CsvLine[9] = Number(CsvLine[9]);
-            
+
 
             if (CsvLine !== false) {
                 if (CsvLine[0] === "Dot") {
@@ -185,4 +185,95 @@ function LoadCsv() {
         }
     });
 
+}
+
+////////////////////
+// Input Dot List //
+////////////////////
+
+DotListNumber = 1;      // 加算用関数
+
+function InputDotListAdd() {
+    $("#Input_Dot_List").append('<tr class="DotList" id="DotList_' + DotListNumber + '">' +
+        '<td><input type="text" class="ColorPick" id="InputDotColor_' + DotListNumber + '" /></td>' +
+        '<td><input type="text" size="40" id="InputDotLabel_' + DotListNumber + '" placeholder="Label 名前" /></td>' +
+        '<td><input type="text" size="4" maxlength="4" class="Cord" id="InputDotCordX_' + DotListNumber + '" placeholder="X" />:</td>' +
+        '<td><input type="text" size="4" maxlength="4" class="Cord" id="InputDotCordY_' + DotListNumber + '" placeholder="Y" /></td>' +
+        '<td><input type="checkbox" id="InputDotDisplayLabel_' + DotListNumber + '" />Display Label ラベルを表示</td>' +
+        '<td><img src="./Img/Icon_Remove.png" onClick="InputDotListRemove(' + DotListNumber + ')" /></td>' +
+        '</tr>');
+    // spectrumを設定
+    $("#InputDotColor_" + DotListNumber).spectrum({
+        color: "#ff0000" // 初期値
+    });
+    // DotListの連番を加算
+    DotListNumber++;
+}
+
+// Input Dot List Remove
+function InputDotListRemove(argRemoveLine) {
+    $("#DotList_" + argRemoveLine).remove();
+}
+
+/////////////////////
+// Input Line List //
+/////////////////////
+
+LineListNumber = 1;
+/*
+    <tr>
+        <td><input type="text" class="ColorPick" id="InputLineColor_0" /></td>
+        <td><input type="text" id="InputLineLabel_0" placeholder="Label 名前" /></td>
+        <td>
+            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBeginX_0"
+                placeholder="X1" />:
+            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBegenY_0"
+                placeholder="Y1" />To
+        </td>
+        <td>
+            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndX_0"
+                placeholder="X2" />:
+            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndY_0"
+                placeholder="Y2" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            <input type="checkbox" id="InputLineDisplayLabel_0" />Label ラベル&nbsp;&nbsp;
+            <input type="checkbox" id="InputLineDisplayDistanceKm_0" />Distance(km) 距離(km)&nbsp;&nbsp;
+            <input type="checkbox" id="InputLineDisplayDistanceTiles_0" />Distance(tiles) 距離(タイル数)
+        </td>
+    </tr>
+*/
+function InputLineListAdd() {
+    $("#Input_Line_List").append(
+        '<tbody class="LineList" id="LineList_' + LineListNumber + '">' +
+        '<tr>' +
+        '<td><input type="text" class="ColorPick" id="InputLineColor_' + LineListNumber + '" /></td>' +
+        '<td><input type="text" id="InputLineLabel_' + LineListNumber + '" placeholder="Label 名前" /></td>' +
+        '<td>' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputLineBeginX_' + LineListNumber + '" placeholder="X1" />:' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputLineBegenY_' + LineListNumber + '" placeholder="Y1" />To' +
+        '</td>' +
+        '<td>' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndX_' + LineListNumber + '" placeholder="X2" />:' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndY_' + LineListNumber + '" placeholder="Y2" />' +
+        '</td>' +
+        '<td rowspan="2"><img src="./Img/Icon_Remove.png" onClick="InputLineListRemove(' + LineListNumber + ')" /></td>' +
+        '</tr><tr>' +
+        '<td colspan="4">' +
+        '<input type="checkbox" id="InputLineDisplayLabel_' + LineListNumber + '" />Label ラベル&nbsp;&nbsp;' +
+        '<input type="checkbox" id="InputLineDisplayDistanceKm_' + LineListNumber + '" />Distance(km) 距離(km)&nbsp;&nbsp;' +
+        '<input type="checkbox" id="InputLineDisplayDistanceTiles_' + LineListNumber + '" />Distance(tiles) 距離(タイル数)' +
+        '</td></tr></tbody>'
+    );
+    // spectrumを設定
+    $("#InputLineColor_" + LineListNumber).spectrum({
+        color: "#ff0000" // 初期値
+    });
+    LineListNumber++;
+}
+
+function InputLineListRemove(argRemoveLine) {
+    $("#LineList_" + argRemoveLine).remove();
 }

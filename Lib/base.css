@@ -162,3 +162,7 @@ textarea{
     background-color: #FFA500;
 }
 
+.InputDiv{
+    height: Calc(100% - 130px);
+    overflow-y: scroll;
+}

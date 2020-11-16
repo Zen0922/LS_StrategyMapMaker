@@ -5,7 +5,8 @@
     <title>Strategy Map Maker - Last Shelter: Survival</title>
     <link type="text/css" rel="stylesheet" href="Lib/base.css" />
     <link type="text/css" rel="stylesheet" href="Lib/spectrum-1.8.1/spectrum.css" />
-    <script type="text/javascript" src="Lib/jquery-3.5.1.min.js"></script>
+    <!--<script type="text/javascript" src="Lib/jquery-3.5.1.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="Lib/spectrum-1.8.1/spectrum.js"></script>
     <script type="text/javascript" src="Draw/BaseDraw.js"></script>
     <script type="text/javascript" src="Draw/InfoSetting.js"></script>
@@ -46,65 +47,82 @@
         <!-- Input type Select End -->
 
         <!-- Title Input Begin  -->
-        <div id="Input_Title">
+        <div id="Input_Title" class="InputDiv">
             <input type="text" id="ImageTitle" style="width: 90%"
                 placeholder="Enter a title for this map. このマップのタイトルを入力しましょう。" />
         </div>
         <!-- Title Input End-->
 
         <!-- CSV Format Input Begin -->
-        <div id="Input_Csv">
+        <div id="Input_Csv" class="InputDiv">
             <textarea id="InputFormCsv" style="width: 100%; height: 300px;"></textarea>
         </div>
         <!-- CSV Format Input End -->
 
         <!-- Dot Input Begin -->
-        <div id="Input_Dots">
-            <table>
-                <tr>
-                    <td><input type="text" class="ColorPick" id="Dota" /></td>
-                    <td><input type="text" size="40" id="IpLabel[0]" placeholder="Label 名前" /></td>
-                    <td><input type="text" size="4" maxlength="4" class="Cord" id="IpX[0]" placeholder="X" />:</td>
-                    <td><input type="text" size="4" maxlength="4" class="Cord" id="IpY[0]" placeholder="Y" /></td>
-                    <td></td>
-                </tr>
+        <div id="Input_Dots" class="InputDiv">
+            <table style="margin-left: auto; margin-right: auto;">
+                <tbody id="Input_Dot_List">
+                    <tr class="DotList">
+                        <td><input type="text" class="ColorPick" id="InputDotColor_0" /></td>
+                        <td><input type="text" size="40" id="InputDotLabel_0" placeholder="Label 名前" /></td>
+                        <td><input type="text" size="4" maxlength="4" class="Cord" id="InputDotCordX_0"
+                                placeholder="X" />:</td>
+                        <td><input type="text" size="4" maxlength="4" class="Cord" id="InputDotCordY_0"
+                                placeholder="Y" /></td>
+                        <td><input type="checkbox" id="InputDotDisplayLabel_0" />Display Label ラベルを表示</td>
+                        <td></td>
+                    </tr>
 
+                </tbody>
             </table>
-            <div style="font-size: 10pt; line-height: 16px;"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add new coordinates</div>
+            <div style="font-size: 10pt; line-height: 16px; text-align: center;">
+                <button onClick="InputDotListAdd()"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add
+                    new dot 新しい点を追加</button>
+            </div>
         </div>
         <!-- Dot Input End -->
 
         <!-- Line Input Begin -->
-        <div id="Input_Lines">
-            <table>
-                <tr>
-                    <td><input type="text" class="ColorPick" id="InputLineColor" /></td>
-                    <td><input type="text" id="InputLineLabel" placeholder="Label 名前" /></td>
-                    <td>
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBeginX" placeholder="X1" />:
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBegenY"
-                            placeholder="Y1" />To
-                    </td>
-                    <td>
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndX" placeholder="X2" />:
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndY" placeholder="Y2" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <input type="checkbox" id="InputLineDisplayLabel" />Label ラベル&nbsp;&nbsp;
-                        <input type="checkbox" id="InputLineDisplayDistanceKm" />Distance(km) 距離(km)
-                        <input type="checkbox" id="InputLineDisplayDistanceTiles" />Distance(tiles) 距離(タイル数)
-                    </td>
-                </tr>
+        <div id="Input_Lines" class="InputDiv">
+            <table style="margin-left: auto; margin-right: auto;" id="Input_Line_List">
+                <tbody>
+                    <tr class="LineList">
+                        <td><input type="text" class="ColorPick" id="InputLineColor_0" /></td>
+                        <td><input type="text" id="InputLineLabel_0" placeholder="Label 名前" /></td>
+                        <td>
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBeginX_0"
+                                placeholder="X1" />:
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBegenY_0"
+                                placeholder="Y1" />To
+                        </td>
+                        <td>
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndX_0"
+                                placeholder="X2" />:
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndY_0"
+                                placeholder="Y2" />
+                        </td>
+                        <td rowspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <input type="checkbox" id="InputLineDisplayLabel_0" />Label ラベル&nbsp;&nbsp;
+                            <input type="checkbox" id="InputLineDisplayDistanceKm_0" />Distance(km) 距離(km)
+                            <input type="checkbox" id="InputLineDisplayDistanceTiles_0" />Distance(tiles) 距離(タイル数)
+                        </td>
+                    </tr>
+                </tbody>
             </table>
-            <div style="font-size: 10pt; line-height: 16px;"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add new coordinates</div>
+            <div style="font-size: 10pt; line-height: 16px; text-align: center;">
+                <button onClick="InputLineListAdd()"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add new line 新しい線を追加</button>
+            </div>
+
         </div>
         <!-- Line Input End -->
 
         <!-- Area Input Begin -->
-        <div id="Input_Area">
-            <table>
+        <div id="Input_Area" class="InputDiv">
+            <table style="margin-left: auto; margin-right: auto;">
                 <tr>
                     <td>
                         <input type="text" class="ColorPick" id="InputLineColor" />
@@ -127,11 +145,15 @@
 
 
             </table>
+            <div style="font-size: 10pt; line-height: 16px; text-align: center;">
+                <button><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add new area 新しい面を追加</button>
+            </div>
+
         </div>
         <!-- Area Input End -->
 
         <!-- Text Input Begin -->
-        <div id="Input_Text">
+        <div id="Input_Text" class="InputDiv">
             testinput
         </div>
         <!-- Text Input Begin -->
