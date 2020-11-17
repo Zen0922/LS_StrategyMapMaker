@@ -148,7 +148,6 @@ function LoadCsv() {
     var CsvLines = CsvText.split("\n");
     CsvLines.forEach(function (elem, index) {
         var CsvLine = DecodeCsvData(elem);
-        console.log(CsvLine);
         if (CsvLine !== false) {
             // 座標を分割
             if (CsvLine[3] !== "") {
@@ -204,7 +203,21 @@ function InputDotListAdd() {
         '</tr>');
     // spectrumを設定
     $("#InputDotColor_" + DotListNumber).spectrum({
-        color: "#ff0000" // 初期値
+        showPaletteOnly: true,
+        togglePaletteOnly: true,
+        togglePaletteMoreText: 'more',
+        togglePaletteLessText: 'less',
+        color: 'purple',
+        palette: [
+            ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
+            ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+            ["#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc"],
+            ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
+            ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
+            ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
+            ["#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47"],
+            ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
+        ]
     });
     // DotListの連番を加算
     DotListNumber++;
@@ -220,31 +233,7 @@ function InputDotListRemove(argRemoveLine) {
 /////////////////////
 
 LineListNumber = 1;
-/*
-    <tr>
-        <td><input type="text" class="ColorPick" id="InputLineColor_0" /></td>
-        <td><input type="text" id="InputLineLabel_0" placeholder="Label 名前" /></td>
-        <td>
-            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBeginX_0"
-                placeholder="X1" />:
-            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineBegenY_0"
-                placeholder="Y1" />To
-        </td>
-        <td>
-            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndX_0"
-                placeholder="X2" />:
-            <input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndY_0"
-                placeholder="Y2" />
-        </td>
-    </tr>
-    <tr>
-        <td colspan="4">
-            <input type="checkbox" id="InputLineDisplayLabel_0" />Label ラベル&nbsp;&nbsp;
-            <input type="checkbox" id="InputLineDisplayDistanceKm_0" />Distance(km) 距離(km)&nbsp;&nbsp;
-            <input type="checkbox" id="InputLineDisplayDistanceTiles_0" />Distance(tiles) 距離(タイル数)
-        </td>
-    </tr>
-*/
+
 function InputLineListAdd() {
     $("#Input_Line_List").append(
         '<tbody class="LineList" id="LineList_' + LineListNumber + '">' +
@@ -269,11 +258,138 @@ function InputLineListAdd() {
     );
     // spectrumを設定
     $("#InputLineColor_" + LineListNumber).spectrum({
-        color: "#ff0000" // 初期値
+        showPaletteOnly: true,
+        togglePaletteOnly: true,
+        togglePaletteMoreText: 'more',
+        togglePaletteLessText: 'less',
+        color: 'red',
+        palette: [
+            ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
+            ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+            ["#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc"],
+            ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
+            ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
+            ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
+            ["#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47"],
+            ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
+        ]
     });
     LineListNumber++;
 }
 
 function InputLineListRemove(argRemoveLine) {
     $("#LineList_" + argRemoveLine).remove();
+}
+
+
+/////////////////////
+// Input Area List //
+/////////////////////
+
+AreaListNumber = 1;
+
+function InputAreaListAdd() {
+    $("#Input_Area_List").append(
+        '<tbody class="AreaList" id="AreaList_' + AreaListNumber + '">' +
+        '<tr><td>' +
+        '<input type="text" class="ColorPick" id="InputAreaColor_' + AreaListNumber + '" />' +
+        '<input type="text" id="InputAreaLabel_' + AreaListNumber + '" placeholder="Label ラベル" />' +
+        '<input type="checkbox" id="InputAreaDisplayLabel_' + AreaListNumber + '" />Label ラベル' +
+        '</td><td rowspan="2">' +
+        '<img src="./Img/Icon_Remove.png" onClick="InputAreaListRemove(' + AreaListNumber + ')" />' +
+        '</td></tr><tr>' +
+        '<td>' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX1_' + AreaListNumber + '" placeholder="X" />:' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY1_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX2_' + AreaListNumber + '" placeholder="X" />:' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY2_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX3_' + AreaListNumber + '" placeholder="X" />:' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY3_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX4_' + AreaListNumber + '" placeholder="X" />:' +
+        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY4_' + AreaListNumber + '" placeholder="Y" />' +
+        '</td></tr></tbody>'
+    );
+    // spectrumを設定
+    $("#InputAreaColor_" + AreaListNumber).spectrum({
+        showAlpha: true,
+    });
+    AreaListNumber++;
+}
+
+function InputAreaListRemove(argRemoveLine) {
+    $("#AreaList_" + argRemoveLine).remove();
+}
+
+/////////////////////
+// Input Text List //
+/////////////////////
+
+// 動作モード制御変数
+isPickCord = false;
+
+// マウス追従イベントを開始（ページロードと同時に実行）
+document.addEventListener("DOMContentLoaded", function () {
+    const Canvas = document.getElementById("LSMap");
+    // マウス追従イベント
+    Canvas.addEventListener('mousemove', function (e) {
+        $("#PreviewTextCord").css({
+            'top': e.clientY - 30, 'left': e.clientX
+        });
+    });
+});
+
+// Canvas上の画像取得イベント
+function GetCanvasCord(argElementNo) {
+    isPickCord = true;
+    hideSettingForm();
+
+    // 要素の上にマウスポインタがある時のみ動作
+    $("#LSMap").mouseout(function () {
+        if (isPickCord) {
+            $("#PreviewTextCord").hide();
+        }
+    });
+    $("#LSMap").mouseover(function () {
+        if (isPickCord) {
+            $("#PreviewTextCord").show();
+        }
+    });
+
+    // クリック時の動作
+    $("#LSMap").click(function (e) {
+        if (isPickCord) {
+            isPickCord = false;
+            $("#PreviewTextCord").hide();
+            //alert( "X:" + e.offsetX + " Y:" + e.offsetY);
+            // 座標情報を代入
+            $("#InputTextX_" + argElementNo).val(e.offsetX);
+            $("#InputTextY_" + argElementNo).val(e.offsetY);
+            // 画像を差替
+            $("#InputCordMode_" + argElementNo).html('<img src="./Img/Plot_Cord_Selected.png" />');
+            $("#LSMap").off();
+            showSettingForm();
+        }
+    });
+}
+
+TextListNumber = 1;
+
+function InputTextListAdd() {
+    $("#Input_Text_List").append(
+        '<tr class="TextList" id="TextList_' + TextListNumber + '">' +
+        '<td style="vertical-align: middle;"><input type="text" id="InputText_' + TextListNumber + '" placeholder="Label ラベル" /></td>' +
+        '<td style="vertical-align: middle;">' +
+        '<input type="text" class="Cord" size="5" id="InputTextX_' + TextListNumber + '" style="color: #DDD;" placeholder="X" disabled />:' +
+        '<input type="text" class="Cord" size="5" id="InputTextY_' + TextListNumber + '" style="color: #DDD;" placeholder="Y" disabled />' +
+        '</td><td style="vertical-align: middle;">' +
+        '<span id="InputCordMode_' + TextListNumber + '" onClick="GetCanvasCord(' + TextListNumber + ')"><img src="./Img/Plot_Cord.png" /></span>' +
+        '</td><td>' +
+        '<img src="./Img/Icon_Remove.png" onClick="InputTextListRemove(' + TextListNumber + ')" />' +
+        '</td></tr>'
+    );
+    TextListNumber++;
+}
+
+function InputTextListRemove(argRemoveLine) {
+    $("#TextList_" + argRemoveLine).remove();
 }

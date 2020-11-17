@@ -14,9 +14,27 @@
     <script type="text/javascript">
         jQuery(function ($) {
             $(".ColorPick").spectrum({
-                color: "#ff0000" // 初期値
+                showPaletteOnly: true,
+                togglePaletteOnly: true,
+                togglePaletteMoreText: 'more',
+                togglePaletteLessText: 'less',
+                color: 'red',
+                palette: [
+                    ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
+                    ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+                    ["#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc"],
+                    ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
+                    ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
+                    ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
+                    ["#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47"],
+                    ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
+                ]
             });
-        }); 
+            $("#InputAreaColor_0").spectrum({
+                showAlpha: true,
+            });
+
+        });
     </script>
 
 </head>
@@ -34,7 +52,7 @@
 
     <!-- Input Area Begin -->
     <div id="InputArea">
-        <h2 id="InputAreaTitle">Data Input Settings</h2>
+        <h2 id="InputAreaTitle">Show Data Settings</h2>
         <!-- Input type Select Begin -->
         <div id="InputSelect" style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
             <button class="SelectButton" id="ButtonSetTitle" onclick="setTitleMode()">Title: タイトル</button>
@@ -86,8 +104,8 @@
         <!-- Line Input Begin -->
         <div id="Input_Lines" class="InputDiv">
             <table style="margin-left: auto; margin-right: auto;" id="Input_Line_List">
-                <tbody>
-                    <tr class="LineList">
+                <tbody class="LineList">
+                    <tr>
                         <td><input type="text" class="ColorPick" id="InputLineColor_0" /></td>
                         <td><input type="text" id="InputLineLabel_0" placeholder="Label 名前" /></td>
                         <td>
@@ -114,7 +132,8 @@
                 </tbody>
             </table>
             <div style="font-size: 10pt; line-height: 16px; text-align: center;">
-                <button onClick="InputLineListAdd()"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add new line 新しい線を追加</button>
+                <button onClick="InputLineListAdd()"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add
+                    new line 新しい線を追加</button>
             </div>
 
         </div>
@@ -122,31 +141,42 @@
 
         <!-- Area Input Begin -->
         <div id="Input_Area" class="InputDiv">
-            <table style="margin-left: auto; margin-right: auto;">
-                <tr>
-                    <td>
-                        <input type="text" class="ColorPick" id="InputLineColor" />
-                        <input type="text" id="InputLineLabel" placeholder="Label ラベル" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX1" placeholder="X" />:
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY1" placeholder="Y" />&nbsp;
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX2" placeholder="X" />:
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY2" placeholder="Y" />&nbsp;
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX3" placeholder="X" />:
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY3" placeholder="Y" />&nbsp;
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX4" placeholder="X" />:
-                        <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY4" placeholder="Y" />
+            <table style="margin-left: auto; margin-right: auto;" id="Input_Area_List">
+                <tbody class="AreaList">
+                    <tr>
+                        <td>
+                            <input type="text" class="ColorPick" id="InputAreaColor_0" />
+                            <input type="text" id="InputAreaLabel_0" placeholder="Label ラベル" />
+                            <input type="checkbox" id="InputAreaDisplayLabel_0" />Label ラベル
+                        </td>
+                        <td rowspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX1_0"
+                                placeholder="X" />:
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY1_0"
+                                placeholder="Y" />&nbsp;
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX2_0"
+                                placeholder="X" />:
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY2_0"
+                                placeholder="Y" />&nbsp;
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX3_0"
+                                placeholder="X" />:
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY3_0"
+                                placeholder="Y" />&nbsp;
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX4_0"
+                                placeholder="X" />:
+                            <input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY4_0" placeholder="Y" />
 
-                    </td>
-                </tr>
-
+                        </td>
+                    </tr>
+                </tbody>
 
             </table>
             <div style="font-size: 10pt; line-height: 16px; text-align: center;">
-                <button><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add new area 新しい面を追加</button>
+                <button onClick="InputAreaListAdd()"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add
+                    new area 新しい面を追加</button>
             </div>
 
         </div>
@@ -154,9 +184,31 @@
 
         <!-- Text Input Begin -->
         <div id="Input_Text" class="InputDiv">
-            testinput
+            <table style="margin-left: auto; margin-right: auto;">
+                <tbody id="Input_Text_List">
+                    <tr class="TextList">
+                        <td style="vertical-align: middle;"><input type="text" id="InputText_0"
+                                placeholder="Label ラベル" /></td>
+                        <td style="vertical-align: middle;">
+                            <input type="text" class="Cord" size="5" id="InputTextX_0" style="color: #DDD;"
+                                placeholder="X" disabled />:
+                            <input type="text" class="Cord" size="5" id="InputTextY_0" style="color: #DDD;"
+                                placeholder="Y" disabled />
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <span id="InputCordMode_0" onClick="GetCanvasCord(0)"><img
+                                    src="./Img/Plot_Cord.png" /></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="font-size: 10pt; line-height: 16px; text-align: center;">
+                <button onClick="InputTextListAdd()"><img src="Img/Icon_Add.png" style="vertical-align: bottom;" />Add
+                    new Text 新しいテキストを追加</button>
+            </div>
         </div>
-        <!-- Text Input Begin -->
+        <!-- Text Input End -->
 
         <div style="text-align: center; margin-top: 10px;">
             <button class="ClearButton">Clear All</button>
@@ -164,8 +216,10 @@
         </div>
 
     </div>
-
     <!-- Input Area End -->
+
+    <!-- For Text Input Layout -->
+    <div id="PreviewTextCord">Click where to display the text. テキストの表示場所をクリック。</div>
 
     <div id="Others">Wallpaper: <a href="https://lostandtaken.com/" target="_blank">L+T</a></div>
 </body>

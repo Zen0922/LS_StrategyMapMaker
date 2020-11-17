@@ -435,8 +435,6 @@ function CalcDistanceTiles(argX1, argY1, argX2, argY2) {
     }
 }
 
-
-
 // LastShelterの座標かどうかを判別する
 function isLSCord(argCord) {
     // 座標フォーマットに一致するか？
@@ -452,31 +450,4 @@ function isLSCord(argCord) {
         return false;
     }
     return true;
-}
-
-// 以下ボツ処理
-
-// PlotDots
-// 入力フォーマット
-//  XXXX:YYYY,Label<Return>
-function PlotDots() {
-    var plotText = $("#InputFormCsv").val();
-    // 改行コードを揃えて前後の余分な改行を除去
-    plotText = plotText.replace("\r\n", "\n");
-    plotText = plotText.replace("\r", "\n");
-    plotText = plotText.trim();
-    // 行ごとに分割して処理
-    var plotLines = plotText.split("\n");
-    plotLines.forEach(function (elem, index) {
-        // テキストを分解
-        tmpText = elem.split(",");
-        tmpLabel = tmpText[1];
-        tmpCord = tmpText[0].split(":");
-        tmpX = tmpCord[0];
-        tmpY = tmpCord[1];
-        var realCord = PlotDot(tmpX, tmpY);     // 点をプロット
-        // ラベルを表示
-        DrawText(tmpLabel, realCord[0] + 10, realCord[1]);
-    });
-
 }
