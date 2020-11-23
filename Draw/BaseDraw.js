@@ -183,6 +183,9 @@ function DrawText(argLabel, argX, argY) {
     } else {
         const LSMap = document.getElementById("LSMap");
         const ctx = LSMap.getContext('2d');
+        // 座標（比）を画像サイズに戻す
+        argX = argX * C_MAX_WIDTH;
+        argY = argY * C_MAX_HEIGHT;
 
         ctx.font = "bold 12pt sans-serif";
         var textWidth = ctx.measureText(argLabel);

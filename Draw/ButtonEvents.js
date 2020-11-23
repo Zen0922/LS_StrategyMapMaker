@@ -123,16 +123,6 @@ function setCsvMode() {
     $("#Input_Text").hide();
 }
 
-//////////
-// Draw //
-//////////
-function InfoRegist() {
-    BaseMapDraw();
-    LoadCsv();
-    hideSettingForm();
-}
-
-
 ///////////////////////
 // Load Csv And Draw //
 ///////////////////////
@@ -149,6 +139,11 @@ function LoadCsv() {
     CsvLines.forEach(function (elem, index) {
         var CsvLine = DecodeCsvData(elem);
         if (CsvLine !== false) {
+            // 色をRGBに戻す
+            if (CsvLine[0] !== "Text") {
+                var TC = tinycolor(CsvLine[2]);
+                CsvLine[2] = TC.toRgbString();
+            }
             // 座標を分割
             if (CsvLine[3] !== "") {
                 tmpCord[0] = CsvLine[3].split(":");
@@ -196,13 +191,14 @@ function InputDotListAdd() {
     $("#Input_Dot_List").append('<tr class="DotList" id="DotList_' + DotListNumber + '">' +
         '<td><input type="text" class="ColorPick" id="InputDotColor_' + DotListNumber + '" /></td>' +
         '<td><input type="text" size="40" id="InputDotLabel_' + DotListNumber + '" placeholder="Label 名前" /></td>' +
-        '<td><input type="text" size="4" maxlength="4" class="Cord" id="InputDotCordX_' + DotListNumber + '" placeholder="X" />:</td>' +
-        '<td><input type="text" size="4" maxlength="4" class="Cord" id="InputDotCordY_' + DotListNumber + '" placeholder="Y" /></td>' +
+        '<td><input type="number" step="1" min="0" max="1200" class="Cord" id="InputDotCordX_' + DotListNumber + '" placeholder="X" />:</td>' +
+        '<td><input type="number" step="1" min="0" max="1200" class="Cord" id="InputDotCordY_' + DotListNumber + '" placeholder="Y" /></td>' +
         '<td><input type="checkbox" id="InputDotDisplayLabel_' + DotListNumber + '" />Display Label ラベルを表示</td>' +
         '<td><img src="./Img/Icon_Remove.png" onClick="InputDotListRemove(' + DotListNumber + ')" /></td>' +
         '</tr>');
     // spectrumを設定
     $("#InputDotColor_" + DotListNumber).spectrum({
+        preferredFormat: "hex",
         showPaletteOnly: true,
         togglePaletteOnly: true,
         togglePaletteMoreText: 'more',
@@ -241,12 +237,12 @@ function InputLineListAdd() {
         '<td><input type="text" class="ColorPick" id="InputLineColor_' + LineListNumber + '" /></td>' +
         '<td><input type="text" id="InputLineLabel_' + LineListNumber + '" placeholder="Label 名前" /></td>' +
         '<td>' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputLineBeginX_' + LineListNumber + '" placeholder="X1" />:' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputLineBegenY_' + LineListNumber + '" placeholder="Y1" />To' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputLineBeginX_' + LineListNumber + '" placeholder="X1" />:' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputLineBeginY_' + LineListNumber + '" placeholder="Y1" />To' +
         '</td>' +
         '<td>' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndX_' + LineListNumber + '" placeholder="X2" />:' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputLineEndY_' + LineListNumber + '" placeholder="Y2" />' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputLineEndX_' + LineListNumber + '" placeholder="X2" />:' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputLineEndY_' + LineListNumber + '" placeholder="Y2" />' +
         '</td>' +
         '<td rowspan="2"><img src="./Img/Icon_Remove.png" onClick="InputLineListRemove(' + LineListNumber + ')" /></td>' +
         '</tr><tr>' +
@@ -258,6 +254,7 @@ function InputLineListAdd() {
     );
     // spectrumを設定
     $("#InputLineColor_" + LineListNumber).spectrum({
+        preferredFormat: "hex",
         showPaletteOnly: true,
         togglePaletteOnly: true,
         togglePaletteMoreText: 'more',
@@ -287,7 +284,6 @@ function InputLineListRemove(argRemoveLine) {
 /////////////////////
 
 AreaListNumber = 1;
-
 function InputAreaListAdd() {
     $("#Input_Area_List").append(
         '<tbody class="AreaList" id="AreaList_' + AreaListNumber + '">' +
@@ -299,18 +295,19 @@ function InputAreaListAdd() {
         '<img src="./Img/Icon_Remove.png" onClick="InputAreaListRemove(' + AreaListNumber + ')" />' +
         '</td></tr><tr>' +
         '<td>' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX1_' + AreaListNumber + '" placeholder="X" />:' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY1_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX2_' + AreaListNumber + '" placeholder="X" />:' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY2_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX3_' + AreaListNumber + '" placeholder="X" />:' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY3_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaX4_' + AreaListNumber + '" placeholder="X" />:' +
-        '<input type="text" size="4" maxlength="4" class="Cord" id="InputAreaY4_' + AreaListNumber + '" placeholder="Y" />' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputAreaX1_' + AreaListNumber + '" placeholder="X" />:' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputAreaY1_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputAreaX2_' + AreaListNumber + '" placeholder="X" />:' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputAreaY2_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputAreaX3_' + AreaListNumber + '" placeholder="X" />:' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputAreaY3_' + AreaListNumber + '" placeholder="Y" />&nbsp;' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputAreaX4_' + AreaListNumber + '" placeholder="X" />:' +
+        '<input type="number" step="1" min="0" max="1200" class="Cord" id="InputAreaY4_' + AreaListNumber + '" placeholder="Y" />' +
         '</td></tr></tbody>'
     );
     // spectrumを設定
     $("#InputAreaColor_" + AreaListNumber).spectrum({
+        preferredFormat: "hex",
         showAlpha: true,
     });
     AreaListNumber++;
@@ -326,7 +323,6 @@ function InputAreaListRemove(argRemoveLine) {
 
 // 動作モード制御変数
 isPickCord = false;
-
 // マウス追従イベントを開始（ページロードと同時に実行）
 document.addEventListener("DOMContentLoaded", function () {
     const Canvas = document.getElementById("LSMap");
@@ -373,14 +369,13 @@ function GetCanvasCord(argElementNo) {
 }
 
 TextListNumber = 1;
-
 function InputTextListAdd() {
     $("#Input_Text_List").append(
         '<tr class="TextList" id="TextList_' + TextListNumber + '">' +
         '<td style="vertical-align: middle;"><input type="text" id="InputText_' + TextListNumber + '" placeholder="Label ラベル" /></td>' +
         '<td style="vertical-align: middle;">' +
-        '<input type="text" class="Cord" size="5" id="InputTextX_' + TextListNumber + '" style="color: #DDD;" placeholder="X" disabled />:' +
-        '<input type="text" class="Cord" size="5" id="InputTextY_' + TextListNumber + '" style="color: #DDD;" placeholder="Y" disabled />' +
+        '<input type="number" step="1" min="0" max="99999" class="CordImage" id="InputTextX_' + TextListNumber + '" style="color: #DDD;" placeholder="X" disabled />:' +
+        '<input type="number" step="1" min="0" max="99999" class="CordImage" id="InputTextY_' + TextListNumber + '" style="color: #DDD;" placeholder="Y" disabled />' +
         '</td><td style="vertical-align: middle;">' +
         '<span id="InputCordMode_' + TextListNumber + '" onClick="GetCanvasCord(' + TextListNumber + ')"><img src="./Img/Plot_Cord.png" /></span>' +
         '</td><td>' +
@@ -393,3 +388,235 @@ function InputTextListAdd() {
 function InputTextListRemove(argRemoveLine) {
     $("#TextList_" + argRemoveLine).remove();
 }
+
+
+////////////////
+// Encode Csv //
+////////////////
+
+function TitleEncodeCsv() {
+    var tmpImageTitle = $("#ImageTitle").val();
+    var tmpCsv = EncodeCsvData("Title", tmpImageTitle, "", "", "", "", "", "", "", "");
+    $("#InputFormCsv").text(tmpCsv);
+}
+
+function DotEncodeCsv() {
+    for (var i = 0; i <= DotListNumber; i++) {
+        if ($("#DotList_" + i).length) {
+            var tmpColor = $("#InputDotColor_" + i).val();
+            var TC = tinycolor(tmpColor);
+            if (TC.isValid()) {
+                tmpColor = TC.toHex8String();
+            } else {
+                tmpColor = "#000";
+            }
+            var tmpLabel = $("#InputDotLabel_" + i).val();
+            var tmpX1 = $("#InputDotCordX_" + i).val();
+            var tmpY1 = $("#InputDotCordY_" + i).val();
+            var tmpDisplayLabel = $("#InputDotDisplayLabel_" + i).prop('checked');
+            if (tmpDisplayLabel) {
+                tmpDisplayLabel = 1;
+            } else {
+                tmpDisplayLabel = 0;
+            }
+            var tmpCsv = EncodeCsvData("Dot", tmpLabel, tmpColor, tmpX1 + ":" + tmpY1, "", "", "", tmpDisplayLabel, 0, 0);
+            $("#InputFormCsv").append(tmpCsv);
+        }
+    }
+}
+
+function LineEncodeCsv() {
+    for (var i = 0; i <= LineListNumber; i++) {
+        if ($("#LineList_" + i).length) {
+            var tmpColor = $("#InputLineColor_" + i).val();
+            var TC = tinycolor(tmpColor);
+            if (TC.isValid()) {
+                tmpColor = TC.toHex8String();
+            } else {
+                tmpColor = "#000";
+            }
+            var tmpLabel = $("#InputLineLabel_" + i).val();
+            var tmpBeginX1 = $("#InputLineBeginX_" + i).val();
+            var tmpBeginY1 = $("#InputLineBeginY_" + i).val();
+            var tmpEndX1 = $("#InputLineEndX_" + i).val();
+            var tmpEndY1 = $("#InputLineEndY_" + i).val();
+            var tmpDisplayLabel = $("#InputLineDisplayLabel_" + i).prop('checked');
+            if (tmpDisplayLabel) {
+                tmpDisplayLabel = 1;
+            } else {
+                tmpDisplayLabel = 0;
+            }
+            var tmpDisplayDistanceKm = $("#InputLineDisplayDistanceKm_" + i).prop('checked');
+            if (tmpDisplayDistanceKm) {
+                tmpDisplayDistanceKm = 1;
+            } else {
+                tmpDisplayDistanceKm = 0;
+            }
+            var tmpDisplayDistanceTiles = $("#InputLineDisplayDistanceTiles_" + i).prop('checked');
+            if (tmpDisplayDistanceTiles) {
+                tmpDisplayDistanceTiles = 1;
+            } else {
+                tmpDisplayDistanceTiles = 0;
+            }
+            var tmpCsv = EncodeCsvData("Line", tmpLabel, tmpColor, tmpBeginX1 + ":" + tmpBeginY1, tmpEndX1 + ":" + tmpEndY1, "", "", tmpDisplayLabel, tmpDisplayDistanceKm, tmpDisplayDistanceTiles);
+            $("#InputFormCsv").append(tmpCsv);
+        }
+    }
+}
+
+function AreaEncodeCsv() {
+    for (var i = 0; i <= AreaListNumber; i++) {
+        if ($("#AreaList_" + i).length) {
+            var tmpColor = $("#InputAreaColor_" + i).val();
+            var TC = tinycolor(tmpColor);
+            if (TC.isValid()) {
+                tmpColor = TC.toHex8String();
+            } else {
+                tmpColor = "#80FF0000";
+            }
+            var tmpLabel = $("#InputAreaLabel_" + i).val();
+            var tmpAreaX1 = $("#InputAreaX1_" + i).val();
+            var tmpAreaY1 = $("#InputAreaY1_" + i).val();
+            var tmpAreaX2 = $("#InputAreaX2_" + i).val();
+            var tmpAreaY2 = $("#InputAreaY2_" + i).val();
+            var tmpAreaX3 = $("#InputAreaX3_" + i).val();
+            var tmpAreaY3 = $("#InputAreaY3_" + i).val();
+            var tmpAreaX4 = $("#InputAreaX4_" + i).val();
+            var tmpAreaY4 = $("#InputAreaY4_" + i).val();
+            var tmpDisplayLabel = $("#InputAreaDisplayLabel_" + i).prop('checked');
+            if (tmpDisplayLabel) {
+                tmpDisplayLabel = 1;
+            } else {
+                tmpDisplayLabel = 0;
+            }
+            var tmpCsv = EncodeCsvData(
+                "Area", tmpLabel, tmpColor,
+                tmpAreaX1 + ":" + tmpAreaY1,
+                tmpAreaX2 + ":" + tmpAreaY2,
+                tmpAreaX3 + ":" + tmpAreaY3,
+                tmpAreaX4 + ":" + tmpAreaY4,
+                tmpDisplayLabel, 0, 0);
+
+            $("#InputFormCsv").append(tmpCsv);
+        }
+    }
+}
+
+function TextEncodeCsv() {
+    for (var i = 0; i <= TextListNumber; i++) {
+        if ($("#TextList_" + i).length) {
+            var tmpText = $("#InputText_" + i).val();
+            var tmpCordX1 = $("#InputTextX_" + i).val();
+            var tmpCordY1 = $("#InputTextY_" + i).val();
+            var tmpCsv = EncodeCsvData("Text", tmpText, "", tmpCordX1 + ":" + tmpCordY1, "", "", "", 0, 0, 0);
+            $("#InputFormCsv").append(tmpCsv);
+        }
+    }
+}
+
+///////////////////
+// 描画順序を整理 //
+///////////////////
+// Area -> Line -> Dot -> Text -> Title　の順でソート
+function SortCsv() {
+    var ImportCsvText = $("#InputFormCsv").val();
+    // 改行コードを揃えて前後の余分な改行を除去
+    ImportCsvText = ImportCsvText.replace("\r\n", "\n");
+    ImportCsvText = ImportCsvText.replace("\r", "\n");
+    ImportCsvText = ImportCsvText.trim();
+
+    // 行ごとに分割して処理
+    var ImportCsvLines = ImportCsvText.split("\n");
+    var ExportCsvLines = [];
+    var tmpTitleLines = [];
+    var tmpDotLines = [];
+    var tmpLineLines = [];
+    var tmpAreaLines = [];
+    var tmpTextLines = [];
+
+    // 各配列に分散格納
+    ImportCsvLines.forEach(function (oneLine) {
+        switch (oneLine.substr(0, 3)) {
+            case "Dot":
+                tmpDotLines[tmpDotLines.length] = oneLine;
+                break;
+            case "Lin":
+                tmpLineLines[tmpLineLines.length] = oneLine;
+                break;
+            case "Tit":
+                tmpTitleLines[tmpTitleLines.length] = oneLine;
+                break;
+            case "Are":
+                tmpAreaLines[tmpAreaLines.length] = oneLine;
+                break;
+            case "Tex":
+                tmpTextLines[tmpTextLines.length] = oneLine;
+                break;
+            default:
+                break;
+        }
+    });
+
+    // 再配置
+    tmpAreaLines.forEach(function (oneLine) {
+        ExportCsvLines[ExportCsvLines.length] = oneLine;
+    });
+    tmpLineLines.forEach(function (oneLine) {
+        ExportCsvLines[ExportCsvLines.length] = oneLine;
+    });
+    tmpDotLines.forEach(function (oneLine) {
+        ExportCsvLines[ExportCsvLines.length] = oneLine;
+    });
+    tmpTextLines.forEach(function (oneLine) {
+        ExportCsvLines[ExportCsvLines.length] = oneLine;
+    });
+    tmpTitleLines.forEach(function (oneLine) {
+        ExportCsvLines[ExportCsvLines.length] = oneLine;
+    });
+    // CSVに書き出し
+    $("#InputFormCsv").text("");
+    ExportCsvLines.forEach(function (oneLine) {
+        oneLine = oneLine.trim();
+        $("#InputFormCsv").append(oneLine + "\n");
+    });
+}
+
+/////////////////
+// 入力チェック //
+/////////////////
+document.addEventListener("DOMContentLoaded", function () {
+    $('input:enabled').blur(function (event) {
+        var tmpClass = $(event.target).attr("class");
+
+        switch(tmpClass){
+            case "Cord":
+                if( isNaN($(event.target).val())){
+                    $(event.target).val("");
+                }
+                
+            default:
+                break;
+        }
+
+    });
+});
+
+//////////
+// Draw //
+//////////
+function InfoRegist() {
+    // Encode CSV
+    TitleEncodeCsv();
+    DotEncodeCsv();
+    LineEncodeCsv();
+    AreaEncodeCsv();
+    TextEncodeCsv();
+    // Sort CSV
+    SortCsv();
+
+    // Draw
+    BaseMapDraw();
+    LoadCsv();
+    hideSettingForm();
+}
+

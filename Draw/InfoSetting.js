@@ -73,10 +73,12 @@ function EncodeCsvData(argType, argLabel, argColor, argCord1, argCord2, argCord3
     }
     // テキストの場合のみ画像に対する比率で記録する
     //  Canvasサイズが変化するため、毎回正しい値にするため
-    var tmpTextCord = argCord1.split(":");
-    tmpTextCord[0] = Math.round(tmpTextCord[0] / C_MAX_WIDTH * 100000) / 100000;
-    tmpTextCord[1] = Math.round(tmpTextCord[1] / C_MAX_HEIGHT * 100000) / 100000;
-    argCord1 = tmpTextCord[0] + ":" + tmpTextCord[1];
+    if (argType === "Text") {
+        var tmpTextCord = argCord1.split(":");
+        tmpTextCord[0] = Math.round(tmpTextCord[0] / C_MAX_WIDTH * 100000) / 100000;
+        tmpTextCord[1] = Math.round(tmpTextCord[1] / C_MAX_HEIGHT * 100000) / 100000;
+        argCord1 = tmpTextCord[0] + ":" + tmpTextCord[1];
+    }
     // 座標を記録
     resultCsv = resultCsv + argCord1 + "," + argCord2 + "," + argCord3 + "," + argCord4 + ",";
 
