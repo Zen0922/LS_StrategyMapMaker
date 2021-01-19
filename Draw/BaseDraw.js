@@ -269,6 +269,9 @@ function DrawLine(argColor, argLabel, argX1, argY1, argX2, argY2, argDispLabel, 
     //////////////////////////
     // ラベル・距離の表示処理 //
     //////////////////////////
+    argDispKm = parseInt(argDispKm);
+    argDispTiles = parseInt(argDispTiles);
+
     // 距離（km）の計算
     if (argDispKm === 1) {
         // 距離の計算
@@ -291,28 +294,32 @@ function DrawLine(argColor, argLabel, argX1, argY1, argX2, argY2, argDispLabel, 
     // 最終テキスト生成
     if (argDispLabel === 1 && (argDispKm === 1 || argDispTiles === 1)) {
         tmpText = argLabel + " " + tmpText;
-    } else {
+    } else if (argDispLabel === 1 && argDispKm === 0 && argDispTiles === 0) {
         tmpText = argLabel;
+    } else if (argDispLabel === 0 && argDispKm === 0 && argDispTiles === 0) {
+        tmpText = "";
     }
 
-    // 描画基準座標決定
-    var tmpCenterX = tmpX2 - (tmpX2 - tmpX1) / 2 + 20;
-    var tmpCenterY = tmpY2 - (tmpY2 - tmpY1) / 2 - 10;
+    if (tmpText !== "") {
+        // 描画基準座標決定
+        var tmpCenterX = tmpX2 - (tmpX2 - tmpX1) / 2 + 20;
+        var tmpCenterY = tmpY2 - (tmpY2 - tmpY1) / 2 - 10;
 
-    // 描画処理
-    ctx.font = "9pt sans-serif";
-    var textWidth = ctx.measureText(tmpText);
-    // テキスト用の枠を描画
-    ctx.beginPath();
-    ctx.rect(tmpCenterX, tmpCenterY, textWidth.width + 20, -30);
-    ctx.fillStyle = "rgba(0,0,0,0.5)";
-    ctx.fill();
-    ctx.closePath();
-    // テキストを描画
-    ctx.beginPath();
-    ctx.fillStyle = "rgb(255,255,255)";
-    ctx.fillText(tmpText, tmpCenterX + 10, tmpCenterY - 10);
-    ctx.closePath();
+        // 描画処理
+        ctx.font = "9pt sans-serif";
+        var textWidth = ctx.measureText(tmpText);
+        // テキスト用の枠を描画
+        ctx.beginPath();
+        ctx.rect(tmpCenterX, tmpCenterY, textWidth.width + 20, -30);
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fill();
+        ctx.closePath();
+        // テキストを描画
+        ctx.beginPath();
+        ctx.fillStyle = "rgb(255,255,255)";
+        ctx.fillText(tmpText, tmpCenterX + 10, tmpCenterY - 10);
+        ctx.closePath();
+    }
 }
 
 // 面を描く関数

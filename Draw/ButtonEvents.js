@@ -509,7 +509,7 @@ function TextEncodeCsv() {
             var tmpCordX1 = $("#InputTextX_" + i).val();
             var tmpCordY1 = $("#InputTextY_" + i).val();
             var tmpCsv = EncodeCsvData("Text", tmpText, "", tmpCordX1 + ":" + tmpCordY1, "", "", "", 0, 0, 0);
-            $("#InputFormCsv").append(tmpCsv);
+            $("#InputFormCsv").append(tmpCsv.trim());
         }
     }
 }
@@ -584,22 +584,220 @@ function SortCsv() {
 /////////////////
 // 入力チェック //
 /////////////////
-document.addEventListener("DOMContentLoaded", function () {
-    $('input:enabled').blur(function (event) {
-        var tmpClass = $(event.target).attr("class");
 
-        switch(tmpClass){
+// フォームのフォーカスから離れたときに実行するチェック
+document.addEventListener("DOMContentLoaded", function () {
+    $('body').on('blur', 'input:enabled', function (event) {
+        var tmpClass = $(event.target).attr("class");
+        var tmpId = $(event.target).attr("id");
+        // Class名称による判断
+        switch (tmpClass) {
             case "Cord":
-                if( isNaN($(event.target).val())){
+                // 数字以外の場合値をクリア
+                if (isNaN($(event.target).val())) {
                     $(event.target).val("");
                 }
-                
+                if (!(0 <= $(event.target).val() && $(event.target).val() <= 1200)) {
+                    alert("Enter the coordinates of Last Shelter.(0-1200)\nLast Shelterの座標を入力してください。（0～1200）");
+                    $(event.target).val("");
+                }
+            default:
+                break;
+        }
+
+        // ID名称による判断
+        if (tmpId.match(/(Label|Text|ImageTitle)/i)) {
+            var tmpValue = $(event.target).val();
+            if (tmpValue.match(/,/i)) {
+                alert("You cannot enter a comma(,). It will be removed automatically.\nカンマ（,）は入力できません。自動的に除去します。");
+                tmpValue = tmpValue.replace(/,/g, "");
+                $(event.target).val(tmpValue);
+            }
+        }
+    });
+});
+
+// ボタンを押したときに実行するチェック
+
+
+//////////////////////////////////////
+// CSVから入力フォームへの書き戻し処理 //
+//////////////////////////////////////
+function ReputForm() {
+    // Dot List Remove
+    for (var i = 1; i < DotListNumber; i++) {
+        if ($("#DotList_" + i).length) $("#DotList_" + i).remove();
+    }
+    DotListNumber = 1;
+
+    // Line
+    for (var i = 1; i < LineListNumber; i++) {
+        if ($("#LineList_" + i).length) $("#LineList_" + i).remove();
+    }
+    LineListNumber = 1;
+
+    // Area
+    for (var i = 1; i < AreaListNumber; i++) {
+        if ($("#AreaList_" + i).length) $("#AreaList_" + i).remove();
+    }
+    AreaListNumber = 1;
+
+    // Text
+    for (var i = 1; i < TextListNumber; i++) {
+        if ($("#TextList_" + i).length) $("#TextList_" + i).remove();
+    }
+    TextListNumber = 1;
+
+    // ReInput Values
+    var ImportCsvText = $("#InputFormCsv").val();
+    // 改行コードを揃えて前後の余分な改行を除去
+    ImportCsvText = ImportCsvText.replace("\r\n", "\n");
+    ImportCsvText = ImportCsvText.replace("\r", "\n");
+    ImportCsvText = ImportCsvText.trim();
+
+    // 行ごとに分割して処理
+    var ImportCsvLines = ImportCsvText.split("\n");
+    var tmpCountDot = 0;
+    var tmpCountLine = 0;
+    var tmpCountArea = 0;
+    var tmpCountText = 0;
+    ImportCsvLines.forEach(function (oneLine) {
+        var tmpValues = DecodeCsvData(oneLine);
+
+        switch (tmpValues[0]) {
+            // Title ReInput
+            case "Title":
+                $("#ImageTitle").val(tmpValues[1]);
+                break;
+            
+            // Dot ReInput
+            case "Dot":
+                if (tmpCountDot > 0) InputDotListAdd();
+                $("#InputDotColor_" + tmpCountDot).val(tmpValues[2]);
+                $("#InputDotColor_" + tmpCountDot).spectrum({
+                    color: tmpValues[2],
+                    preferredFormat: "hex",
+                    showPaletteOnly: true,
+                    togglePaletteOnly: true,
+                    togglePaletteMoreText: 'more',
+                    togglePaletteLessText: 'less',
+                    palette: [
+                        ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
+                        ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+                        ["#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc"],
+                        ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
+                        ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
+                        ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
+                        ["#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47"],
+                        ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
+                    ]
+                });
+                $("#InputDotLabel_" + tmpCountDot).val(tmpValues[1]);
+                // SplitCode
+                var tmpCord = tmpValues[3].split(":");
+                $("#InputDotCordX_" + tmpCountDot).val(parseInt(tmpCord[0]));
+                $("#InputDotCordY_" + tmpCountDot).val(parseInt(tmpCord[1]));
+                // DisplayLabel
+                if (parseInt(tmpValues[7]) === 1) {
+                    $("#InputDotDisplayLabel_" + tmpCountDot).prop('checked', true);
+                }
+                tmpCountDot++;
+                break;
+
+            // ReInput Line
+            case "Line":
+                if (tmpCountLine > 0) InputLineListAdd();
+                $("#InputLineColor_" + tmpCountLine).val(tmpValues[2]);
+                $("#InputLineColor_" + tmpCountLine).spectrum({
+                    color: tmpValues[2],
+                    preferredFormat: "hex",
+                    showPaletteOnly: true,
+                    togglePaletteOnly: true,
+                    togglePaletteMoreText: 'more',
+                    togglePaletteLessText: 'less',
+                    palette: [
+                        ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
+                        ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+                        ["#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc"],
+                        ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
+                        ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
+                        ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
+                        ["#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47"],
+                        ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
+                    ]
+                });
+                $("#InputLineLabel_" + tmpCountLine).val(tmpValues[1]);
+                // SplitCode
+                var tmpCord = tmpValues[3].split(":");
+                $("#InputLineBeginX_" + tmpCountLine).val(parseInt(tmpCord[0]));
+                $("#InputLineBeginY_" + tmpCountLine).val(parseInt(tmpCord[1]));
+                tmpCord = tmpValues[4].split(":");
+                $("#InputLineEndX_" + tmpCountLine).val(parseInt(tmpCord[0]));
+                $("#InputLineEndY_" + tmpCountLine).val(parseInt(tmpCord[1]));
+                // DisplayLabel
+                if (parseInt(tmpValues[7]) === 1) {
+                    $("#InputLineDisplayLabel_" + tmpCountLine).prop('checked', true);
+                }
+                if (parseInt(tmpValues[8]) === 1) {
+                    $("#InputLineDisplayDistanceKm_" + tmpCountLine).prop('checked', true);
+                }
+                if (parseInt(tmpValues[9]) === 1) {
+                    $("#InputLineDisplayDistanceTiles_" + tmpCountLine).prop('checked', true);
+                }
+                tmpCountLine++;
+                break;
+
+            // ReInput Area
+            case "Area":
+                if (tmpCountArea > 0) InputAreaListAdd();
+                $("#InputAreaColor_" + tmpCountArea).val(tmpValues[2]);
+                $("#InputAreaColor_" + tmpCountArea).spectrum({
+                    color: tmpValues[2],
+                    showAlpha: true
+                });
+                $("#InputAreaLabel_" + tmpCountArea).val(tmpValues[1]);
+                // SplitCode
+                var tmpCord = tmpValues[3].split(":");
+                $("#InputAreaX1_" + tmpCountArea).val(parseInt(tmpCord[0]));
+                $("#InputAreaY1_" + tmpCountArea).val(parseInt(tmpCord[1]));
+                tmpCord = tmpValues[4].split(":");
+                $("#InputAreaX2_" + tmpCountArea).val(parseInt(tmpCord[0]));
+                $("#InputAreaY2_" + tmpCountArea).val(parseInt(tmpCord[1]));
+                tmpCord = tmpValues[5].split(":");
+                $("#InputAreaX3_" + tmpCountArea).val(parseInt(tmpCord[0]));
+                $("#InputAreaY3_" + tmpCountArea).val(parseInt(tmpCord[1]));
+                tmpCord = tmpValues[6].split(":");
+                $("#InputAreaX4_" + tmpCountArea).val(parseInt(tmpCord[0]));
+                $("#InputAreaY4_" + tmpCountArea).val(parseInt(tmpCord[1]));
+                // DisplayLabel
+                if (parseInt(tmpValues[7]) === 1) {
+                    $("#InputAreaDisplayLabel_" + tmpCountArea).prop('checked', true);
+                }
+                tmpCountArea++;
+                break;
+            
+            // ReInput Text
+            case "Text":
+                if (tmpCountText > 0) InputTextListAdd();
+                $("#InputText_" + tmpCountText).val(tmpValues[1]);
+                // SplitCode
+                var tmpCord = tmpValues[3].split(":");
+                $("#InputTextX_" + tmpCountText).val(parseInt(tmpCord[0] * C_MAX_WIDTH));
+                $("#InputTextY_" + tmpCountText).val(parseInt(tmpCord[1] * C_MAX_HEIGHT));
+                $("#InputCordMode_" + tmpCountText).html('<img src="./Img/Plot_Cord_Selected.png" />');
+                tmpCountText++;
+                break;
+
             default:
                 break;
         }
 
     });
-});
+
+
+}
+
+
 
 //////////
 // Draw //
@@ -613,6 +811,7 @@ function InfoRegist() {
     TextEncodeCsv();
     // Sort CSV
     SortCsv();
+    ReputForm();
 
     // Draw
     BaseMapDraw();
